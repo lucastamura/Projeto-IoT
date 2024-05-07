@@ -1,3 +1,37 @@
+CREATE KEYSPACE IF NOT EXISTS ecommerce WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : '1' };
+
+CREATE TABLE PedidosPorCliente (
+    ClienteID UUID,
+    PedidoID UUID,
+    DataPedido timestamp,
+    Nome text,
+    Endereco text,
+    Email text,
+    PRIMARY KEY (ClienteID, PedidoID)
+) WITH CLUSTERING ORDER BY (PedidoID DESC);
+
+CREATE TABLE ItensPorPedido (
+    PedidoID UUID,
+    ProdutoID UUID,
+    Quantidade int,
+    PRIMARY KEY (PedidoID, ProdutoID)
+);
+
+CREATE TABLE ProdutosPorCategoria (
+    CategoriaID UUID,
+    ProdutoID UUID,
+    Nome text,
+    Preco decimal,
+    PRIMARY KEY (CategoriaID, ProdutoID)
+) WITH CLUSTERING ORDER BY (ProdutoID ASC);
+
+CREATE TABLE VendasPorProduto (
+    ProdutoID UUID,
+    QuantidadeVendida counter,
+    PRIMARY KEY (ProdutoID)
+);
+
+
 // Inserções para a tabela PedidosPorCliente
 insert into PedidosPorCliente (ClienteID, PedidoID, DataPedido, Nome, Endereco, Email) values (uuid(), uuid(), toTimestamp(now()),'Burk', 'Apt 970', 'bwheatcroft0@theguardian.com');
 insert into PedidosPorCliente (ClienteID, PedidoID, DataPedido, Nome, Endereco, Email) values (uuid(), uuid(), toTimestamp(now()),'Aloysia', 'Room 1241', 'ababin1@epa.gov');
@@ -92,3 +126,8 @@ UPDATE VendasPorProduto SET QuantidadeVendida = QuantidadeVendida + 123 WHERE Pr
 UPDATE VendasPorProduto SET QuantidadeVendida = QuantidadeVendida + 71 WHERE ProdutoID = uuid();
 UPDATE VendasPorProduto SET QuantidadeVendida = QuantidadeVendida + 73 WHERE ProdutoID = uuid();
 UPDATE VendasPorProduto SET QuantidadeVendida = QuantidadeVendida + 73 WHERE ProdutoID = uuid();
+
+SELECT * FROM ClientesPedidos WHERE ClienteID = <id>;
+SELECT * FROM PedidosItens WHERE PedidoID = <id>;
+SELECT * FROM ProdutosCategoria WHERE CategoriaID = <id>;
+SELECT * FROM VendasProduto WHERE ProdutoID = <id>;
